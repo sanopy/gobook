@@ -41,12 +41,12 @@ func lissajous(out io.Writer) {
 	for i := 0; i < nframes; i++ {
 		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
 		img := image.NewPaletted(rect, palette)
-		t_end := cycles * 2 * math.Pi
-		for t := 0.0; t < t_end; t += res {
+		tEnd := cycles * 2 * math.Pi
+		for t := 0.0; t < tEnd; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
 			ncolors := len(palette) - 1
-			colorIdx := uint8(t*float64(ncolors)/t_end) + 1
+			colorIdx := uint8(t*float64(ncolors)/tEnd) + 1
 			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), colorIdx)
 		}
 		phase += 0.1
