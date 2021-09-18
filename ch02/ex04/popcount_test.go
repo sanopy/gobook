@@ -56,20 +56,29 @@ func TestPopCountWithBitwiseMaximumX(t *testing.T) {
 	}
 }
 
+var input uint64 = 0x012345679abcdef
+var output int
+
 func BenchmarkPopCountWithExpr(b *testing.B) {
+	var s int
 	for i := 0; i < b.N; i++ {
-		PopCountWithExpr(0x012345679abcdef)
+		s += PopCountWithExpr(input)
 	}
+	output = s
 }
 
 func BenchmarkPopCountWithLoop(b *testing.B) {
+	var s int
 	for i := 0; i < b.N; i++ {
-		PopCountWithLoop(0x012345679abcdef)
+		s += PopCountWithLoop(input)
 	}
+	output = s
 }
 
 func BenchmarkPopCountWithBitwise(b *testing.B) {
+	var s int
 	for i := 0; i < b.N; i++ {
-		PopCountWithBitwise(0x012345679abcdef)
+		s += PopCountWithBitwise(input)
 	}
+	output = s
 }
