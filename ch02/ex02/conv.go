@@ -6,9 +6,9 @@ import (
 	"os"
 	"strconv"
 
-	"./lengthconv"
-	"./tempconv"
-	"./weightconv"
+	"github.com/sanopy/gobook/ch02/ex02/lengthconv"
+	"github.com/sanopy/gobook/ch02/ex02/tempconv"
+	"github.com/sanopy/gobook/ch02/ex02/weightconv"
 )
 
 func main() {
@@ -23,18 +23,17 @@ func main() {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "conv: %v\n", err)
 		}
-		switch {
-		case *l:
+		if *l {
 			f := lengthconv.Feet(v)
 			m := lengthconv.Meter(v)
 			fmt.Printf("%s = %s, %s = %s\n", f, lengthconv.FToM(f), m, lengthconv.MToF(m))
-			fallthrough
-		case *t:
+		}
+		if *t {
 			c := tempconv.Celsius(v)
 			f := tempconv.Fahrenheit(v)
 			fmt.Printf("%s = %s, %s = %s\n", c, tempconv.CToF(c), f, tempconv.FToC(f))
-			fallthrough
-		case *w:
+		}
+		if *w {
 			p := weightconv.Pound(v)
 			k := weightconv.Kilogram(v)
 			fmt.Printf("%s = %s, %s = %s\n", p, weightconv.PToKg(p), k, weightconv.KgToP(k))
