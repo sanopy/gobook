@@ -4,7 +4,6 @@ set -m # enable job control
 
 go run surface.go &
 sleep 1
-jobs
 
 curl http://localhost:8000 > default.svg
 curl http://localhost:8000?f=egg > egg.svg

@@ -4,7 +4,6 @@ set -m # enable job control
 
 go run mandelbrot.go &
 sleep 1
-jobs
 
 curl 'http://localhost:8000' > default.png
 curl 'http://localhost:8000?scale=2' > 2x.png
