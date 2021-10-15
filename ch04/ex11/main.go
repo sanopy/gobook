@@ -87,11 +87,16 @@ func create(repo, title, body string) {
 }
 
 func update(repo, title, body string, num int) {
+	issue, err := github.GetIssue(repo, num)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if title == "" {
-		title = inputFromEditor("${input issue title here}")
+		title = inputFromEditor(issue.Title)
 	}
 	if body == "" {
-		body = inputFromEditor("${input issue body here}")
+		body = inputFromEditor(issue.Body)
 	}
 
 	post := &github.PostIssue{Title: title, Body: body}
