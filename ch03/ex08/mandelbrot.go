@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -88,9 +87,7 @@ func mandelbrotFloat(z *mycmplx.BigFloat) color.Color {
 func mandelbrotRat(z *mycmplx.BigRat) color.Color {
 	v := mycmplx.NewBigRat(0, 0)
 	for n := uint8(0); n < iterations; n++ {
-		fmt.Println(n, 1)
 		v = v.Mul(v).Add(z)
-		fmt.Println(n, 2)
 		if v.Abs() > 2 {
 			val := float64(n) / iterations
 			return pseudoColor(val)
