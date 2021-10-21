@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -40,17 +40,13 @@ func downloadImage(title, url string) {
 		log.Fatalf("download failed: %s", resp.Status)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	// 画像の書き込み
 	filename := title + ext
 	f, err := os.Create(filename)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	defer f.Close()
-	f.Write(body)
+	io.Copy(f, resp.Body)
 }
