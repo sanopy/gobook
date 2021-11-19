@@ -2,6 +2,7 @@ package pretty
 
 import (
 	"bytes"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -117,5 +118,30 @@ func TestPrettyPrint(t *testing.T) {
 				t.Errorf("Print(%v) = %v, want %v", tt.args.html, got, tt.want)
 			}
 		})
+	}
+}
+
+func TestPrettyPrintParsable(t *testing.T) {
+	// get any html
+	resp, err := http.Get("https://golang.org")
+	if err != nil {
+		t.Fatalf("html get failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// parse html
+	doc, err := html.Parse(resp.Body)
+	if err != nil {
+		t.Fatalf("html parse failed: %v", err)
+	}
+
+	// get result of pretty print
+	var buf bytes.Buffer
+	forEachNode(&buf, doc, startElement, endElement)
+
+	// assert that result of the pretty-print is parsable
+	_, err = html.Parse(resp.Body)
+	if err != nil {
+		t.Errorf("result of pretty-print cannot parse: %v", err)
 	}
 }
