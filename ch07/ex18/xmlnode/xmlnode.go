@@ -1,4 +1,4 @@
-package main
+package xmlnode
 
 import (
 	"encoding/xml"
@@ -29,11 +29,10 @@ func (e *Element) string(depth int) string {
 	}
 	s += ">\n"
 	for _, c := range e.Children {
-		switch c.(type) {
+		switch c := c.(type) {
 		case CharData:
 			s += fmt.Sprintf("  %s%s\n", indent, c)
 		case *Element:
-			c := c.(*Element)
 			s += c.string(depth + 1)
 		}
 	}

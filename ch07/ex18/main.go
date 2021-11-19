@@ -4,10 +4,12 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/sanopy/gobook/ch07/ex18/xmlnode"
 )
 
 func main() {
-	node, err := Parse(os.Stdin)
+	node, err := xmlnode.Parse(os.Stdin)
 	if err != nil {
 		fmt.Printf("xml parse failed: %v", err)
 		os.Exit(1)
