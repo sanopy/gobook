@@ -47,16 +47,12 @@ func (t *tree) String() string {
 	if t == nil {
 		return ""
 	}
-	var buf string
-	buf = fmt.Sprintf("(%d%s%s)", t.value, t.left.string(), t.right.string())
-	return buf
+	return fmt.Sprintf("(%d%s%s)", t.value, t.left.string(), t.right.string())
 }
 
 func (t *tree) string() string {
 	if t == nil {
 		return ""
 	}
-	var buf string
-	buf = fmt.Sprintf(" (%d%s%s)", t.value, t.left.string(), t.right.string())
-	return buf
+	return fmt.Sprintf(" (%d%s%s)", t.value, t.left.string(), t.right.string())
 }
