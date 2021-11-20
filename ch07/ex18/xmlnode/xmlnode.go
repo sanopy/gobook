@@ -23,21 +23,22 @@ func (e *Element) String() string {
 
 func (e *Element) string(depth int) string {
 	indent := strings.Repeat("  ", depth)
-	s := fmt.Sprintf("%s<%s", indent, e.Type.Local)
+	var s strings.Builder
+	s.WriteString(fmt.Sprintf("%s<%s", indent, e.Type.Local))
 	for _, attr := range e.Attr {
-		s += fmt.Sprintf(" %s=\"%s\"", attr.Name.Local, attr.Value)
+		s.WriteString(fmt.Sprintf(" %s=\"%s\"", attr.Name.Local, attr.Value))
 	}
-	s += ">\n"
+	s.WriteString(">\n")
 	for _, c := range e.Children {
 		switch c := c.(type) {
 		case CharData:
-			s += fmt.Sprintf("  %s%s\n", indent, c)
+			s.WriteString(fmt.Sprintf("  %s%s\n", indent, c))
 		case *Element:
-			s += c.string(depth + 1)
+			s.WriteString(c.string(depth + 1))
 		}
 	}
-	s += fmt.Sprintf("%s</%s>\n", indent, e.Type.Local)
-	return s
+	s.WriteString(fmt.Sprintf("%s</%s>\n", indent, e.Type.Local))
+	return s.String()
 }
 
 func Parse(r io.Reader) (*Element, error) {
