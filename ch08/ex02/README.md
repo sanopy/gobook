@@ -2,6 +2,10 @@
 
 ## Supported FTP Commands
 
+- :heavy_check_mark: supported
+- :warning: partially supported
+- :no_entry: not supported
+
 | status             | command | note                               |
 | ------------------ | ------- | ---------------------------------- |
 | :warning:          | USER    | not implemented authentication     |

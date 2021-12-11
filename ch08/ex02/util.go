@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"log"
 	"strings"
 )
@@ -31,10 +30,4 @@ func (c *ftpConn) parse() error {
 	}
 
 	return nil
-}
-
-func mustCopy(dst io.Writer, src io.Reader) {
-	if _, err := io.Copy(dst, src); err != nil {
-		log.Printf("io.Copy failed: %v", err)
-	}
 }

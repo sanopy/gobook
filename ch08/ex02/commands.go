@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -76,7 +77,10 @@ func (c *ftpConn) handleRetr() {
 
 	// transfer content
 	c.reply(150, "File status okay; about to open data connection.")
-	mustCopy(c.Data, r) // binary mode only
+	if _, err := io.Copy(c.Data, r); err != nil { // binary mode only
+		c.reply(451, "Requested action aborted. Local error in processing.")
+		log.Printf("io.Copy failed: %v", err)
+	}
 
 	c.reply(226, "Closing data connection.")
 	c.Data.Close()
@@ -105,7 +109,10 @@ func (c *ftpConn) handleStor() {
 
 	// write content
 	c.reply(125, "Data connection already open; transfer starting.")
-	mustCopy(f, c.Data) // binary mode only
+	if _, err := io.Copy(f, c.Data); err != nil { // binary mode only
+		c.reply(451, "Requested action aborted. Local error in processing.")
+		log.Printf("io.Copy failed: %v", err)
+	}
 	log.Printf("data copied to %s", path)
 
 	c.reply(226, "Closing data connection.")
