@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"strings"
 )
@@ -30,4 +32,22 @@ func (c *ftpConn) parse() error {
 	}
 
 	return nil
+}
+
+func toAscii(b []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	sr := bytes.NewReader(b)
+	r := bufio.NewReader(sr)
+
+	for {
+		line, _, err := r.ReadLine()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return nil, err
+		}
+		buf.WriteString(fmt.Sprintf("%s\r\n", line))
+	}
+
+	return buf.Bytes(), nil
 }

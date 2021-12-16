@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -114,6 +116,36 @@ func (c *ftpConn) handleStor() {
 		log.Printf("io.Copy failed: %v", err)
 	}
 	log.Printf("data copied to %s", path)
+
+	c.reply(226, "Closing data connection.")
+	c.Data.Close()
+}
+
+func (c *ftpConn) handleList() {
+	path := "./"
+	if len(c.args) >= 1 {
+		path += c.args[0]
+	}
+
+	out, err := exec.Command("ls", "-l", path).Output()
+	if err != nil {
+		c.reply(451, "Requested action aborted. Local error in processing.")
+		log.Printf("io.Copy failed: %v", err)
+	}
+
+	// write content
+	c.reply(125, "Data connection already open; transfer starting.")
+	ascii, err := toAscii(out)
+	if err != nil {
+		c.reply(451, "Requested action aborted. Local error in processing.")
+		log.Printf("io.Copy failed: %v", err)
+	}
+	r := bytes.NewReader(ascii)
+	if _, err := io.Copy(c.Data, r); err != nil { // binary mode only
+		c.reply(451, "Requested action aborted. Local error in processing.")
+		log.Printf("io.Copy failed: %v", err)
+	}
+	log.Println("response list")
 
 	c.reply(226, "Closing data connection.")
 	c.Data.Close()
