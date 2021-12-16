@@ -128,3 +128,34 @@ func (c *ftpConn) handleNoop() {
 	c.reply(200, "Command okay.")
 	log.Println("noop")
 }
+
+func (c *ftpConn) handleEprt() {
+	tokens := strings.Split(c.args[0][1:len(c.args[0])-1], c.args[0][0:1])
+	if len(tokens) != 3 {
+		c.reply(501, "Syntax error in parameters or arguments.")
+		log.Println("port parse failed: invalid number of args")
+		return
+	}
+
+	var addr string
+	switch tokens[0] {
+	case "1":
+		addr = fmt.Sprintf("%s:%s", tokens[1], tokens[2])
+	case "2":
+		addr = fmt.Sprintf("[%s]:%s", tokens[1], tokens[2])
+	default:
+		c.reply(501, "Syntax error in parameters or arguments.")
+		log.Println("port parse failed: invalid number of args")
+		return
+	}
+
+	var err error
+	c.Data, err = net.Dial("tcp", addr)
+	if err != nil {
+		c.reply(421, "Service not available, closing control connection.")
+		log.Fatal(err)
+	}
+
+	c.reply(200, "Command okay.")
+	log.Printf("connected to %s", addr)
+}

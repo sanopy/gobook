@@ -66,6 +66,8 @@ func handleConn(c *ftpConn) {
 			c.handleSyst()
 		case "NOOP":
 			c.handleNoop()
+		case "EPRT":
+			c.handleEprt()
 		default:
 			c.reply(500, "Syntax error, command unrecognized.")
 			log.Println("command unrecognized")

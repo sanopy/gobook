@@ -41,3 +41,10 @@
 | :no_entry:         | STAT    |                                    |
 | :no_entry:         | HELP    |                                    |
 | :heavy_check_mark: | NOOP    |                                    |
+| :heavy_check_mark: | EPRT    |                                    |
+| :no_entry:         | EPSV    |                                    |
+
+## References
+
+- [rfc959](https://datatracker.ietf.org/doc/html/rfc959)
+- [rfc2428](https://datatracker.ietf.org/doc/html/rfc2428)
