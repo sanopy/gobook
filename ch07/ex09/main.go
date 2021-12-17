@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"sort"
-	"text/template"
 )
 
 var trackList = template.Must(template.New("tracklist").Parse(`

@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 	"sync"
-	"text/template"
 )
 
 func main() {
