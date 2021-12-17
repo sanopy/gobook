@@ -8,11 +8,13 @@ import (
 	"net"
 	"os"
 	"strings"
+	"sync"
 	"text/tabwriter"
 	"time"
 )
 
 var cities, clocks []string
+var mu sync.RWMutex
 
 func main() {
 	if len(os.Args) < 2 {
@@ -40,15 +42,19 @@ func main() {
 		fmt.Fprintf(tw, "%v\t", city)
 	}
 	fmt.Fprintf(tw, "\n")
-	for _, clock := range clocks {
-		fmt.Fprintf(tw, "%v\t", clock)
+	for i := 0; i < len(clocks); i++ {
+		mu.RLock()
+		fmt.Fprintf(tw, "%v\t", clocks[i])
+		mu.RUnlock()
 	}
 	tw.Flush()
 
 	for {
 		fmt.Fprintf(tw, "\r")
-		for _, clock := range clocks {
-			fmt.Fprintf(tw, "%v\t", clock)
+		for i := 0; i < len(clocks); i++ {
+			mu.RLock()
+			fmt.Fprintf(tw, "%v\t", clocks[i])
+			mu.RUnlock()
 		}
 		tw.Flush()
 		time.Sleep(50 * time.Millisecond)
@@ -70,6 +76,8 @@ func readClock(idx int, url string) {
 		} else if err != nil {
 			log.Fatal(err)
 		}
+		mu.Lock()
 		clocks[idx] = string(line)
+		mu.Unlock()
 	}
 }

@@ -16,5 +16,5 @@ TZ=Europe/London go run clock/clock.go -port 8030 &
 
 sleep 1
 
-go build -o clockwall clockwall.go
+go build -o clockwall -race clockwall.go
 ./clockwall NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030 # go run では trap に失敗
