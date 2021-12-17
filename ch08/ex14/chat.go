@@ -10,7 +10,6 @@ import (
 )
 
 type client struct {
-	addr string
 	name string
 	ch   chan<- string // an outgoing message channel
 }
@@ -62,8 +61,7 @@ func handleConn(conn net.Conn) {
 	ch := make(chan string) // outgoing client messages
 	go clientWriter(conn, ch)
 
-	who := conn.RemoteAddr().String()
-	cli := client{who, name, ch}
+	cli := client{name, ch}
 
 	ch <- "hello " + name
 	messages <- name + " has arrived"
