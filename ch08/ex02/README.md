@@ -33,7 +33,7 @@
 | :no_entry:         | DELE    |                                    |
 | :no_entry:         | RMD     |                                    |
 | :no_entry:         | MKD     |                                    |
-| :no_entry:         | PWD     |                                    |
+| :heavy_check_mark: | PWD     |                                    |
 | :heavy_check_mark: | LIST    |                                    |
 | :no_entry:         | NLST    |                                    |
 | :no_entry:         | SITE    |                                    |

@@ -5,11 +5,11 @@ import (
 	"sync"
 )
 
-type Cwd string
+type Wd string
 
 var mu sync.Mutex
 
-func (c *Cwd) cd(dir string) error {
+func (c *Wd) cd(dir string) error {
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -25,7 +25,11 @@ func (c *Cwd) cd(dir string) error {
 	if err != nil {
 		return err
 	}
-	*c = Cwd(wd)
+	*c = Wd(wd)
 
 	return nil
+}
+
+func (c Wd) pwd() string {
+	return string(c)
 }

@@ -28,7 +28,7 @@ func (c *ftpConn) handlePass() {
 func (c *ftpConn) handleCwd() {
 	path := c.args[0]
 
-	err := c.cwd.cd(path)
+	err := c.wd.cd(path)
 	if err != nil {
 		c.reply(550, "Requested action not taken.")
 		log.Printf("cwd failed: %v", err)
@@ -133,6 +133,13 @@ func (c *ftpConn) handleStor() {
 
 	c.reply(226, "Closing data connection.")
 	c.Data.Close()
+}
+
+func (c *ftpConn) handlePwd() {
+	wd := c.wd.pwd()
+
+	c.reply(250, fmt.Sprintf("\"%s\"", wd))
+	log.Println("response working directory")
 }
 
 func (c *ftpConn) handleList() {

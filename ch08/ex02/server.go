@@ -11,7 +11,7 @@ import (
 type ftpConn struct {
 	Ctrl net.Conn
 	Data net.Conn
-	cwd  Cwd
+	wd   Wd
 	cmd  string
 	args []string
 }
@@ -39,7 +39,7 @@ func main() {
 			log.Print(err) // e.g., connection aborted
 			continue
 		}
-		go handleConn(&ftpConn{Ctrl: conn, cwd: Cwd(initialDir)})
+		go handleConn(&ftpConn{Ctrl: conn, wd: Wd(initialDir)})
 	}
 }
 
@@ -75,6 +75,8 @@ func handleConn(c *ftpConn) {
 			c.handleRetr()
 		case "STOR":
 			c.handleStor()
+		case "PWD":
+			c.handlePwd()
 		case "LIST":
 			c.handleList()
 		case "SYST":
