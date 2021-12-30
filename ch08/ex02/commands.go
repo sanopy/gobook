@@ -25,6 +25,20 @@ func (c *ftpConn) handlePass() {
 	log.Println("user logged in")
 }
 
+func (c *ftpConn) handleCwd() {
+	path := c.args[0]
+
+	err := c.cwd.cd(path)
+	if err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("cwd failed: %v", err)
+		return
+	}
+
+	c.reply(250, "Requested file action okay, completed.")
+	log.Println("changed working directory")
+}
+
 func (c *ftpConn) handleQuit() {
 	c.reply(221, "Service closing control connection.")
 	log.Println("client quit")

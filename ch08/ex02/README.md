@@ -11,7 +11,7 @@
 | :warning:          | USER    | not implemented authentication     |
 | :warning:          | PASS    | not implemented authentication     |
 | :no_entry:         | ACCT    |                                    |
-| :no_entry:         | CWD     |                                    |
+| :heavy_check_mark: | CWD     |                                    |
 | :no_entry:         | CDUP    |                                    |
 | :no_entry:         | SMNT    |                                    |
 | :heavy_check_mark: | QUIT    |                                    |

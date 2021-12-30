@@ -5,30 +5,41 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 )
 
 type ftpConn struct {
 	Ctrl net.Conn
 	Data net.Conn
+	cwd  Cwd
 	cmd  string
 	args []string
 }
 
 const port = 2100
 
+var initialDir string
+
 func main() {
+	var err error
+	initialDir, err = os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	addr := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
 			log.Print(err) // e.g., connection aborted
 			continue
 		}
-		go handleConn(&ftpConn{Ctrl: conn})
+		go handleConn(&ftpConn{Ctrl: conn, cwd: Cwd(initialDir)})
 	}
 }
 
@@ -51,6 +62,8 @@ func handleConn(c *ftpConn) {
 			c.handleUser()
 		case "PASS":
 			c.handlePass()
+		case "CWD":
+			c.handleCwd()
 		case "QUIT":
 			c.handleQuit()
 		case "PORT":
