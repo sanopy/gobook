@@ -75,6 +75,12 @@ func handleConn(c *ftpConn) {
 			c.handleRetr()
 		case "STOR":
 			c.handleStor()
+		case "DELE":
+			c.handleDele()
+		case "RMD":
+			c.handleRmd()
+		case "MKD":
+			c.handleMkd()
 		case "PWD":
 			c.handlePwd()
 		case "LIST":

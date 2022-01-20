@@ -30,9 +30,9 @@
 | :no_entry:         | RNFR    |                                    |
 | :no_entry:         | RNTO    |                                    |
 | :no_entry:         | ABOR    |                                    |
-| :no_entry:         | DELE    |                                    |
-| :no_entry:         | RMD     |                                    |
-| :no_entry:         | MKD     |                                    |
+| :heavy_check_mark: | DELE    |                                    |
+| :heavy_check_mark: | RMD     |                                    |
+| :heavy_check_mark: | MKD     |                                    |
 | :heavy_check_mark: | PWD     |                                    |
 | :heavy_check_mark: | LIST    |                                    |
 | :no_entry:         | NLST    |                                    |

@@ -6,8 +6,6 @@ import (
 	"io"
 	"log"
 	"net"
-	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -84,7 +82,7 @@ func (c *ftpConn) handleRetr() {
 	path := c.args[0]
 
 	// file open
-	r, err := os.Open(path)
+	r, err := c.wd.open(path)
 	if err != nil {
 		c.reply(550, "Requested action not taken.")
 		log.Printf("file open failed: %v", err)
@@ -107,7 +105,7 @@ func (c *ftpConn) handleStor() {
 	path := c.args[0]
 
 	// make directory
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+	if err := c.wd.mkdir(filepath.Dir(path)); err != nil {
 		c.reply(451, "Requested action aborted. Local error in processing.")
 		log.Printf("mkdir failed: %v", err)
 		return
@@ -115,7 +113,7 @@ func (c *ftpConn) handleStor() {
 	log.Printf("success mkdir %s", filepath.Dir(path))
 
 	// file open
-	f, err := os.Create(path)
+	f, err := c.wd.create(path)
 	if err != nil {
 		c.reply(451, "Requested action aborted. Local error in processing.")
 		log.Printf("file open failed: %v", err)
@@ -128,11 +126,90 @@ func (c *ftpConn) handleStor() {
 	if _, err := io.Copy(f, c.Data); err != nil { // binary mode only
 		c.reply(451, "Requested action aborted. Local error in processing.")
 		log.Printf("io.Copy failed: %v", err)
+		return
 	}
 	log.Printf("data copied to %s", path)
 
 	c.reply(226, "Closing data connection.")
 	c.Data.Close()
+}
+
+func (c *ftpConn) handleDele() {
+	path := c.args[0]
+
+	f, err := c.wd.open(path)
+	if err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	info, err := f.Stat()
+	if err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	if info.IsDir() {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	if err := c.wd.remove(path); err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	c.reply(250, "Requested file action okay, completed.")
+}
+
+func (c *ftpConn) handleRmd() {
+	path := c.args[0]
+
+	f, err := c.wd.open(path)
+	if err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	info, err := f.Stat()
+	if err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	if !info.IsDir() {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	if err := c.wd.remove(path); err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("file open failed: %v", err)
+		return
+	}
+
+	c.reply(250, "Requested file action okay, completed.")
+}
+
+func (c *ftpConn) handleMkd() {
+	path := c.args[0]
+
+	// make directory
+	if err := c.wd.mkdir(path); err != nil {
+		c.reply(550, "Requested action not taken.")
+		log.Printf("mkdir failed: %v", err)
+		return
+	}
+	log.Printf("success mkdir %s", path)
+
+	c.reply(257, fmt.Sprintf("\"%s\" created.", path))
 }
 
 func (c *ftpConn) handlePwd() {
@@ -148,7 +225,7 @@ func (c *ftpConn) handleList() {
 		path += c.args[0]
 	}
 
-	out, err := exec.Command("ls", "-l", path).Output()
+	out, err := c.wd.ls(path)
 	if err != nil {
 		c.reply(451, "Requested action aborted. Local error in processing.")
 		log.Printf("io.Copy failed: %v", err)
